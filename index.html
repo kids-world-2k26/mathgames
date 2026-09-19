@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bé Vui Học Toán 1 - Cùng Robot & Các Bạn | Kết Nối Tri Thức</title>
+  <meta name="description" content="Bộ trò chơi tương tác toán học dành cho học sinh lớp 1 theo chuẩn sách giáo khoa Kết nối tri thức với cuộc sống (Tập 1 & Tập 2). Đếm số, so sánh, tách gộp số, phép tính cộng trừ, hình học, đo độ dài và xem giờ.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔢</text></svg>">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/games.css">
+</head>
+<body>
+  <!-- Decorative Animated Clouds Background -->
+  <div class="bg-decorations" aria-hidden="true">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Header Navigation -->
+    <header class="app-header">
+      <div class="brand-section" id="brandLogo" role="button" tabindex="0" title="Về trang chủ">
+        <div class="brand-logo">
+          🔢
+        </div>
+        <div class="brand-title">
+          <h1>Bé Vui Học Toán 1</h1>
+          <span>Kết Nối Tri Thức Với Cuộc Sống</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Star tracker -->
+        <div class="star-counter" id="starTracker" title="Số ngôi sao bé đã đạt được">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+          <span id="starCount">0</span>
+        </div>
+
+        <!-- Badges / Trophy button -->
+        <button class="btn-icon" id="badgeBtn" title="Xem bộ sưu tập huy hiệu" aria-label="Bộ sưu tập huy hiệu">
+          🏆
+        </button>
+
+        <!-- Sound toggle button -->
+        <button class="btn-icon" id="soundToggleBtn" title="Bật/Tắt âm thanh" aria-label="Bật tắt âm thanh">
+          🔊
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Dynamic Content (Home or Active Game) -->
+    <main id="mainContent" role="main">
+      <!-- Injected dynamically by app.js -->
+    </main>
+  </div>
+
+  <!-- Universal Modal for Badges & Game Completion -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button class="modal-close" id="modalCloseBtn" aria-label="Đóng">✕</button>
+      <div id="modalBody">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Application Logic -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
