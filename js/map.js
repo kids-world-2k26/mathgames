@@ -9,7 +9,13 @@ export class AdventureMap {
     this.onOpenParentZone = onOpenParentZone;
 
     // Load unlocked stations and equipped wardrobe
-    this.unlockedStations = JSON.parse(localStorage.getItem('adv_unlocked_stations') || '["adv_count"]');
+    this.unlockedStations = JSON.parse(localStorage.getItem('adv_unlocked_stations') || '["adv_count", "adv_fruit", "adv_balloons", "adv_compare", "adv_frog"]');
+    // Ensure all 5 existing stations are unlocked
+    ['adv_count', 'adv_fruit', 'adv_balloons', 'adv_compare', 'adv_frog'].forEach(s => {
+      if (!this.unlockedStations.includes(s)) this.unlockedStations.push(s);
+    });
+    localStorage.setItem('adv_unlocked_stations', JSON.stringify(this.unlockedStations));
+
     this.stationStars = JSON.parse(localStorage.getItem('adv_station_stars') || '{}');
     this.equippedWardrobe = JSON.parse(localStorage.getItem('adv_equipped_wardrobe') || '[]');
     this.currentStationId = localStorage.getItem('adv_current_station') || 'adv_count';
@@ -97,7 +103,7 @@ export class AdventureMap {
                       ${'⭐'.repeat(stars) || '✨ Chưa có sao'}
                     </div>
                   ` : `
-                    <div class="station-lock-label">${station.isComingSoon ? 'Sắp mở khóa' : 'Cần vượt trạm trước'}</div>
+                    <div class="station-lock-label">${station.isComingSoon ? 'Sắp mở khóa' : 'Bấm để mở khóa'}</div>
                   `}
                 </div>
               </div>
@@ -123,11 +129,15 @@ export class AdventureMap {
       this.onOpenParentZone();
     });
 
-    // Station nodes
-    this.container.querySelectorAll('.map-station-point.unlocked').forEach(el => {
+    // Station nodes - allow clicking any playable station
+    this.container.querySelectorAll('.map-station-point').forEach(el => {
       el.addEventListener('click', () => {
         sound.playClick();
         const stationId = el.dataset.stationId;
+        if (!this.unlockedStations.includes(stationId)) {
+          this.unlockedStations.push(stationId);
+          localStorage.setItem('adv_unlocked_stations', JSON.stringify(this.unlockedStations));
+        }
         this.currentStationId = stationId;
         localStorage.setItem('adv_current_station', stationId);
         this.onStationSelect(stationId);

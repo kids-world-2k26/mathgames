@@ -369,8 +369,11 @@ export class GameFrog {
         <!-- Hint Guidance Box -->
         <div id="frogHintBox" class="adv-hint-box" style="display: none;"></div>
 
-        <!-- Answer Cards (Ascending Left to Right) -->
-        <div class="frog-choices-container" id="choicesContainer" style="${isLevel1 ? 'display: none;' : ''}">
+        <!-- Answer Cards (Ascending Left to Right - Always Visible & Clickable) -->
+        <div class="frog-choices-container" id="choicesContainer">
+          <div style="font-size: 14px; font-weight: 800; color: #475569; text-align: center; margin-bottom: 8px;">
+            ${(q.type === 'FIND_STEPS' || q.type === 'FIND_STEPS_BACK') ? 'Bé hãy chọn số bước nhảy:' : 'Bé hãy chọn đài sen đích đến:'}
+          </div>
           <div class="frog-choices-grid">
             ${q.options.map(opt => `
               <button class="frog-choice-card" data-val="${opt.value}" id="card_${opt.value}">
@@ -434,13 +437,12 @@ export class GameFrog {
       sound.speakVietnamese(q.promptText);
     });
 
-    // Level 1: Big "NHẢY!" button
+    // Level 1: "NHẢY!" button (interactive helper, hops frog)
     const jumpBtn = this.container.querySelector('#frogJumpBtn');
     if (jumpBtn) {
       jumpBtn.addEventListener('click', () => {
-        if (this.isJumping || this.manualJumpsDone >= q.amount) return;
+        if (this.manualJumpsDone >= q.amount) return;
 
-        this.isJumping = true;
         this.manualJumpsDone++;
 
         const stepDir = (q.type === 'JUMP_FORWARD' || q.type === 'FIND_STEPS') ? 1 : -1;
@@ -460,20 +462,10 @@ export class GameFrog {
         setTimeout(() => {
           sound.playPondSplash();
           sound.speakVietnameseNumber(nextPad);
-          this.isJumping = false;
-
           jumpBtn.textContent = `🐸 NHẢY! (${this.manualJumpsDone}/${q.amount})`;
-
-          // Completed all steps: Reveal choice cards!
           if (this.manualJumpsDone >= q.amount) {
             jumpBtn.disabled = true;
             jumpBtn.style.opacity = '0.5';
-
-            const choices = this.container.querySelector('#choicesContainer');
-            if (choices) {
-              choices.style.display = 'block';
-              choices.classList.add('pop-in');
-            }
           }
         }, 480);
       });
@@ -483,96 +475,114 @@ export class GameFrog {
     const helpJumpBtn = this.container.querySelector('#frogHelpJumpBtn');
     if (helpJumpBtn) {
       helpJumpBtn.addEventListener('click', () => {
-        if (this.isJumping) return;
         this.performAnimatedJumpSeries(q.amount, q.unit, (q.type === 'JUMP_FORWARD' || q.type === 'FIND_STEPS') ? 1 : -1);
       });
     }
 
-    // Answer cards
+    // Answer cards - clicking card submits answer
     const cards = this.container.querySelectorAll('.frog-choice-card');
-    const hintBox = this.container.querySelector('#frogHintBox');
-
     cards.forEach(card => {
       card.addEventListener('click', () => {
-        if (this.isJumping) return;
         const val = parseInt(card.dataset.val, 10);
-
-        if (val === q.answer) {
-          // CORRECT ANSWER!
-          sound.playCorrect();
-          card.classList.add('choice-correct');
-          cards.forEach(c => c.disabled = true);
-
-          if (this.wrongTries === 0) {
-            this.correctCount++;
-            this.firstTryCount++;
-          }
-          this.onStarEarned();
-
-          // Highlight target pad
-          const destPad = this.container.querySelector(`#pad_${this.currentFrogPos}`);
-          if (destPad) destPad.classList.add('pad-glowing');
-
-          // Encouragement praise
-          const praises = ['Giỏi quá!', 'Chính xác!', 'Ếch nhảy thật xa!', 'Bé đếm siêu đấy!', 'Hoan hô!'];
-          const praise = praises[Math.floor(Math.random() * praises.length)];
-          sound.speakVietnamese(praise);
-
-          setTimeout(() => {
-            this.nextQuestion();
-          }, 1500);
-
-        } else {
-          // WRONG ANSWER
-          this.wrongTries++;
-          card.classList.add('choice-dimmed');
-          card.disabled = true;
-
-          // Sai lần 1: Đưa ếch nhẹ nhàng về start, nói "Thử lại nhé!", KHÔNG có âm buồn
-          if (this.wrongTries === 1) {
-            this.updateFrogPosition(q.start, true);
-            sound.speakVietnamese('Thử lại nhé!');
-          }
-          // Sai lần 2: Ếch tự nhảy chậm từng bước minh họa, tô màu các đài đã qua, đọc từng số
-          else if (this.wrongTries === 2) {
-            if (hintBox) {
-              hintBox.style.display = 'block';
-              hintBox.innerHTML = `
-                <span style="font-size: 22px;">💡</span>
-                <span>Gợi ý: Hãy quan sát chú ếch nhảy chậm từng bước nhé!</span>
-              `;
-            }
-            this.performAnimatedJumpSeries(q.amount, q.unit, (q.type === 'JUMP_FORWARD' || q.type === 'FIND_STEPS') ? 1 : -1);
-          }
-          // Sai lần 3: Hiện đáp án kèm lời giải thích ngắn, thẻ đúng nhấp nháy
-          else if (this.wrongTries >= 3) {
-            cards.forEach(c => {
-              if (parseInt(c.dataset.val, 10) === q.answer) {
-                c.classList.add('choice-pulsing');
-                c.disabled = false;
-              }
-            });
-
-            let explanation = '';
-            if (q.type === 'JUMP_FORWARD') {
-              explanation = `Ếch ở ${q.start}, nhảy thêm ${q.amount} bước. Vậy ${q.start} cộng ${q.amount} bằng ${q.answer}.`;
-            } else if (q.type === 'JUMP_BACK') {
-              explanation = `Ếch ở ${q.start}, nhảy lùi ${q.amount} bước. Vậy ${q.start} trừ ${q.amount} bằng ${q.answer}.`;
-            } else {
-              explanation = `Từ ${q.start} đến ${q.target} cần ${q.answer} bước nhảy.`;
-            }
-
-            if (hintBox) {
-              hintBox.innerHTML = `
-                <span style="font-size: 22px;">🎯</span>
-                <span>${explanation} Bé bấm vào số <b>${q.answer}</b> nhé!</span>
-              `;
-            }
-            sound.speakVietnamese(explanation);
-          }
-        }
+        this.submitAnswer(val);
       });
     });
+
+    // Lily pads - tapping pad directly also submits that number if available
+    const pads = this.container.querySelectorAll('.lily-pad-item');
+    pads.forEach(pad => {
+      pad.addEventListener('click', () => {
+        const val = parseInt(pad.dataset.num, 10);
+        this.submitAnswer(val);
+      });
+    });
+  }
+
+  submitAnswer(val) {
+    const q = this.currentProblem;
+    const cards = this.container.querySelectorAll('.frog-choice-card');
+    const hintBox = this.container.querySelector('#frogHintBox');
+    const matchingCard = this.container.querySelector(`#card_${val}`);
+
+    if (val === q.answer) {
+      // CORRECT ANSWER!
+      sound.playCorrect();
+      if (matchingCard) matchingCard.classList.add('choice-correct');
+      cards.forEach(c => c.disabled = true);
+
+      if (this.wrongTries === 0) {
+        this.correctCount++;
+        this.firstTryCount++;
+      }
+      this.onStarEarned();
+
+      // Jump frog to answer destination if not already there
+      const finalDest = (q.type === 'JUMP_FORWARD' || q.type === 'JUMP_BACK') ? q.answer : q.target;
+      this.updateFrogPosition(finalDest, true);
+
+      const destPad = this.container.querySelector(`#pad_${finalDest}`);
+      if (destPad) destPad.classList.add('pad-glowing');
+
+      // Encouragement praise
+      const praises = ['Giỏi quá!', 'Chính xác!', 'Ếch nhảy thật xa!', 'Bé đếm siêu đấy!', 'Hoan hô!'];
+      const praise = praises[Math.floor(Math.random() * praises.length)];
+      sound.speakVietnamese(praise);
+
+      setTimeout(() => {
+        this.nextQuestion();
+      }, 1400);
+
+    } else {
+      // WRONG ANSWER
+      this.wrongTries++;
+      if (matchingCard) {
+        matchingCard.classList.add('choice-dimmed');
+        matchingCard.disabled = true;
+      }
+
+      // Sai lần 1: Đưa ếch nhẹ nhàng về start, nói "Thử lại nhé!", KHÔNG có âm buồn
+      if (this.wrongTries === 1) {
+        this.updateFrogPosition(q.start, true);
+        sound.speakVietnamese('Thử lại nhé!');
+      }
+      // Sai lần 2: Ếch tự nhảy chậm từng bước minh họa, tô màu các đài đã qua, đọc từng số
+      else if (this.wrongTries === 2) {
+        if (hintBox) {
+          hintBox.style.display = 'block';
+          hintBox.innerHTML = `
+            <span style="font-size: 22px;">💡</span>
+            <span>Gợi ý: Hãy quan sát chú ếch nhảy chậm từng bước nhé!</span>
+          `;
+        }
+        this.performAnimatedJumpSeries(q.amount, q.unit, (q.type === 'JUMP_FORWARD' || q.type === 'FIND_STEPS') ? 1 : -1);
+      }
+      // Sai lần 3: Hiện đáp án kèm lời giải thích ngắn, thẻ đúng nhấp nháy
+      else if (this.wrongTries >= 3) {
+        cards.forEach(c => {
+          if (parseInt(c.dataset.val, 10) === q.answer) {
+            c.classList.add('choice-pulsing');
+            c.disabled = false;
+          }
+        });
+
+        let explanation = '';
+        if (q.type === 'JUMP_FORWARD') {
+          explanation = `Ếch ở ${q.start}, nhảy thêm ${q.amount} bước. Vậy ${q.start} cộng ${q.amount} bằng ${q.answer}.`;
+        } else if (q.type === 'JUMP_BACK') {
+          explanation = `Ếch ở ${q.start}, nhảy lùi ${q.amount} bước. Vậy ${q.start} trừ ${q.amount} bằng ${q.answer}.`;
+        } else {
+          explanation = `Từ ${q.start} đến ${q.target} cần ${q.answer} bước nhảy.`;
+        }
+
+        if (hintBox) {
+          hintBox.innerHTML = `
+            <span style="font-size: 22px;">🎯</span>
+            <span>${explanation} Bé bấm vào số <b>${q.answer}</b> nhé!</span>
+          `;
+        }
+        sound.speakVietnamese(explanation);
+      }
+    }
   }
 
   // Helper: jump series step-by-step
