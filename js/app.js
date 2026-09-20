@@ -317,6 +317,9 @@ class App {
         this.currentGame = new GameFrog(screen, onComplete, onStarEarned, frogLvl);
         break;
       }
+      case 'adv_shapes':
+        this.currentGame = new GameShapes(screen, onComplete, onStarEarned, semesterNum);
+        break;
 
       // Curriculum Mini-Games
       case 'count':

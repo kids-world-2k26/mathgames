@@ -9,9 +9,9 @@ export class AdventureMap {
     this.onOpenParentZone = onOpenParentZone;
 
     // Load unlocked stations and equipped wardrobe
-    this.unlockedStations = JSON.parse(localStorage.getItem('adv_unlocked_stations') || '["adv_count", "adv_fruit", "adv_balloons", "adv_compare", "adv_frog"]');
-    // Ensure all 5 existing stations are unlocked
-    ['adv_count', 'adv_fruit', 'adv_balloons', 'adv_compare', 'adv_frog'].forEach(s => {
+    this.unlockedStations = JSON.parse(localStorage.getItem('adv_unlocked_stations') || '["adv_count", "adv_fruit", "adv_balloons", "adv_compare", "adv_frog", "adv_shapes"]');
+    // Ensure all 6 existing stations are unlocked
+    ['adv_count', 'adv_fruit', 'adv_balloons', 'adv_compare', 'adv_frog', 'adv_shapes'].forEach(s => {
       if (!this.unlockedStations.includes(s)) this.unlockedStations.push(s);
     });
     localStorage.setItem('adv_unlocked_stations', JSON.stringify(this.unlockedStations));

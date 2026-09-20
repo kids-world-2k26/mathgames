@@ -303,9 +303,7 @@ export const ISLAND_STATIONS = [
     icon: '🔷',
     bgTheme: '#faf5ff',
     color: '#8b5cf6',
-    desc: 'Nhận biết hình tròn, vuông, tam giác và hình khối.',
-    isLocked: true,
-    isComingSoon: true,
+    desc: 'Nhận biết hình tròn, vuông, tam giác, chữ nhật và các hình khối 3D đáng yêu!',
     x: 75,
     y: 88
   }
