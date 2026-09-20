@@ -140,6 +140,50 @@ export const GAMES_INFO = [
     icon: '⏰',
     bgColor: '#fce7f3',
     desc: 'Xem đồng hồ chỉ mấy giờ đúng và sắp xếp toa tàu ngày trong tuần.'
+  },
+  {
+    id: 'brick',
+    title: 'Thợ Phá Gạch Toán Học',
+    subtitle: 'Đúng phá vỡ gạch - Sai chồng thêm tầng',
+    semester: 1,
+    tag: 'Mới Lạ ⭐',
+    tagClass: 'tag-tap1',
+    icon: '🧱',
+    bgColor: '#ffe4e6',
+    desc: 'Tính đúng để pháo laze bắn vỡ 1-5 viên gạch theo độ khó! Nếu sai gạch sẽ dâng cao đấy nhé!'
+  },
+  {
+    id: 'racing',
+    title: 'Cuộc Đua Siêu Tốc',
+    subtitle: 'Kích hoạt Nitro bứt phá về đích',
+    semester: 1,
+    tag: 'Tốc Độ 🏁',
+    tagClass: 'tag-tap1',
+    icon: '🏎️',
+    bgColor: '#e0e7ff',
+    desc: 'Chọn đúng cánh cổng mang đáp án của phép tính để xe đua của Robot phóng vọt lên dẫn đầu!'
+  },
+  {
+    id: 'bubbles',
+    title: 'Vương Quốc Bong Bóng',
+    subtitle: 'Bắn vỡ bong bóng phép tính',
+    semester: 1,
+    tag: 'Vui Nhộn 🫧',
+    tagClass: 'tag-tap1',
+    icon: '🫧',
+    bgColor: '#cffafe',
+    desc: 'Những quả bong bóng xà phòng ngũ sắc lơ lửng mang các con số. Bấm nổ bong bóng mang kết quả đúng!'
+  },
+  {
+    id: 'fishing',
+    title: 'Câu Cá Đại Dương',
+    subtitle: 'Khám phá đáy biển xanh & Thả câu',
+    semester: 2,
+    tag: 'Khám Phá 🌊',
+    tagClass: 'tag-tap2',
+    icon: '🎣',
+    bgColor: '#ccfbf1',
+    desc: 'Đàn cá đại dương bơi lội mang các số phép tính. Thả cần câu chú cá chuẩn xác để kéo lên thuyền!'
   }
 ];
 
@@ -147,8 +191,10 @@ export const BADGES = [
   { id: 'first_game', title: 'Ngôi Sao Khởi Đầu', icon: '🌟', reqStars: 5, desc: 'Đạt 5 ngôi sao đầu tiên' },
   { id: 'master_math', title: 'Thần Đồng Tính Nhẩm', icon: '⚡', reqStars: 15, desc: 'Đạt 15 ngôi sao trong các phép tính' },
   { id: 'master_shapes', title: 'Kiến Trúc Sư Nhí', icon: '📐', reqStars: 25, desc: 'Chinh phục các thử thách hình khối' },
-  { id: 'time_traveler', title: 'Chuyên Gia Thời Gian', icon: '🧭', reqStars: 35, desc: 'Nắm vững giờ giấc và thứ trong tuần' },
-  { id: 'math_champion', title: 'Quán Quân Toán 1', icon: '🏆', reqStars: 50, desc: 'Hoàn thành xuất sắc 50 sao toán học!' }
+  { id: 'brick_master', title: 'Vua Phá Gạch', icon: '🧱', reqStars: 35, desc: 'Bậc thầy công phá tường gạch số học' },
+  { id: 'speed_racer', title: 'Tay Đua Siêu Cấp', icon: '🏎️', reqStars: 45, desc: 'Kích hoạt nitro làm chủ đường đua' },
+  { id: 'time_traveler', title: 'Chuyên Gia Thời Gian', icon: '🧭', reqStars: 60, desc: 'Nắm vững giờ giấc và thứ trong tuần' },
+  { id: 'math_champion', title: 'Quán Quân Toán 1', icon: '🏆', reqStars: 75, desc: 'Hoàn thành xuất sắc 75 sao toán học!' }
 ];
 
 export const ROBOT_CHEERS = [

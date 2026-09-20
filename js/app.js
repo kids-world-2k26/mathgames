@@ -9,6 +9,10 @@ import { GameMath } from './games/game_math.js';
 import { GameShapes } from './games/game_shapes.js';
 import { GameMeasure } from './games/game_measure.js';
 import { GameClock } from './games/game_clock.js';
+import { GameBrick } from './games/game_brick.js';
+import { GameRacing } from './games/game_racing.js';
+import { GameBubbles } from './games/game_bubbles.js';
+import { GameFishing } from './games/game_fishing.js';
 
 class App {
   constructor() {
@@ -220,18 +224,33 @@ class App {
       case 'clock':
         this.currentGame = new GameClock(screen, onComplete, onStarEarned, 2);
         break;
+      case 'brick':
+        this.currentGame = new GameBrick(screen, onComplete, onStarEarned, semesterNum);
+        break;
+      case 'racing':
+        this.currentGame = new GameRacing(screen, onComplete, onStarEarned, semesterNum);
+        break;
+      case 'bubbles':
+        this.currentGame = new GameBubbles(screen, onComplete, onStarEarned, semesterNum);
+        break;
+      case 'fishing':
+        this.currentGame = new GameFishing(screen, onComplete, onStarEarned, semesterNum);
+        break;
       default:
         this.renderHome();
         return;
     }
 
-    this.currentGame.start();
-
-    // Bind back button
-    document.getElementById('gameExitBtn')?.addEventListener('click', () => {
-      sound.playClick();
-      this.renderHome();
+    // Delegated back button listener on screen container
+    screen.addEventListener('click', (e) => {
+      const exitBtn = e.target.closest('#gameExitBtn, .btn-back');
+      if (exitBtn) {
+        sound.playClick();
+        this.renderHome();
+      }
     });
+
+    this.currentGame.start();
   }
 
   showCompletionModal(gameId, correctCount, totalCount) {
