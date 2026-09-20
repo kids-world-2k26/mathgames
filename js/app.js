@@ -1,7 +1,8 @@
-import { GAMES_INFO, BADGES, ROBOT_CHEERS } from './data.js';
+import { GAMES_INFO, BADGES, ROBOT_CHEERS, ISLAND_STATIONS } from './data.js';
 import { sound } from './audio.js';
 import { confetti } from './confetti.js';
 
+// Curriculum games
 import { GameCount } from './games/game_count.js';
 import { GameCompare } from './games/game_compare.js';
 import { GameNumberHouse } from './games/game_numberhouse.js';
@@ -14,10 +15,20 @@ import { GameRacing } from './games/game_racing.js';
 import { GameBubbles } from './games/game_bubbles.js';
 import { GameFishing } from './games/game_fishing.js';
 
+// Adventure Island components
+import { AdventureMap } from './map.js';
+import { WardrobeModal } from './wardrobe.js';
+import { ParentZone } from './parent_zone.js';
+import { GameAdvCount } from './games/game_adv_count.js';
+import { GameAdvFruit } from './games/game_adv_fruit.js';
+import { GameAdvBalloons } from './games/game_adv_balloons.js';
+import { GameAdvCompare } from './games/game_adv_compare.js';
+
 class App {
   constructor() {
     this.stars = parseInt(localStorage.getItem('math_stars') || '0', 10);
     this.unlockedBadges = JSON.parse(localStorage.getItem('math_badges') || '[]');
+    this.mode = localStorage.getItem('adv_app_mode') || 'adventure'; // 'adventure' or 'curriculum'
     this.currentSemester = 'all'; // 'all', 1, 2
     this.currentGame = null;
 
@@ -28,11 +39,21 @@ class App {
     this.modalOverlay = document.getElementById('modalOverlay');
     this.modalBody = document.getElementById('modalBody');
     this.modalCloseBtn = document.getElementById('modalCloseBtn');
+
+    this.wardrobeModal = new WardrobeModal(this.modalOverlay, this.modalBody, () => {
+      if (this.mode === 'adventure') this.renderAdventureMap();
+    });
+
+    this.parentZone = new ParentZone(this.modalOverlay, this.modalBody, () => {
+      this.stars = 0;
+      this.updateStarUI();
+      if (this.mode === 'adventure') this.renderAdventureMap();
+    });
   }
 
   init() {
     this.updateStarUI();
-    this.renderHome();
+    this.renderMain();
     this.bindGlobalEvents();
     confetti.init();
   }
@@ -49,7 +70,6 @@ class App {
     this.updateStarUI();
     this.checkBadges();
 
-    // Trigger mini cheer
     this.showToast(ROBOT_CHEERS[Math.floor(Math.random() * ROBOT_CHEERS.length)]);
   }
 
@@ -94,7 +114,7 @@ class App {
       document.body.appendChild(toast);
     }
     toast.innerHTML = `
-      <span style="font-size: 24px;">🤖</span>
+      <span style="font-size: 24px;">🐱</span>
       <span style="font-weight: 800; color: #0369a1; font-size: 15px;">${msg}</span>
     `;
     toast.classList.add('show');
@@ -104,31 +124,90 @@ class App {
     }, 2200);
   }
 
-  renderHome() {
+  renderMain() {
+    if (this.mode === 'adventure') {
+      this.renderAdventureMap();
+    } else {
+      this.renderCurriculumHome();
+    }
+  }
+
+  renderAdventureMap() {
+    this.currentGame = null;
+    this.mainContent.innerHTML = `
+      <!-- Main Mode Switcher -->
+      <div class="semester-tabs" style="margin-bottom: 16px;">
+        <button class="tab-btn ${this.mode === 'adventure' ? 'active' : ''}" id="tabAdvMode">
+          🏝️ Đảo Toán Học Phiêu Lưu (Theo Bản Đồ)
+        </button>
+        <button class="tab-btn ${this.mode === 'curriculum' ? 'active' : ''}" id="tabCurrMode">
+          📚 Khu Vườn SGK (11 Trò Chơi)
+        </button>
+      </div>
+
+      <div id="advMapWrapper"></div>
+    `;
+
+    const wrapper = document.getElementById('advMapWrapper');
+    const advMap = new AdventureMap(
+      wrapper,
+      (stationId) => {
+        this.launchGame(stationId);
+      },
+      () => {
+        this.wardrobeModal.open();
+      },
+      () => {
+        this.parentZone.open();
+      }
+    );
+    advMap.render();
+
+    // Mode buttons
+    document.getElementById('tabAdvMode')?.addEventListener('click', () => {
+      sound.playClick();
+      this.mode = 'adventure';
+      localStorage.setItem('adv_app_mode', 'adventure');
+      this.renderMain();
+    });
+    document.getElementById('tabCurrMode')?.addEventListener('click', () => {
+      sound.playClick();
+      this.mode = 'curriculum';
+      localStorage.setItem('adv_app_mode', 'curriculum');
+      this.renderMain();
+    });
+  }
+
+  renderCurriculumHome() {
     this.currentGame = null;
     const filteredGames = this.currentSemester === 'all'
       ? GAMES_INFO
       : GAMES_INFO.filter(g => g.semester === parseInt(this.currentSemester, 10));
 
     this.mainContent.innerHTML = `
+      <!-- Main Mode Switcher -->
+      <div class="semester-tabs" style="margin-bottom: 16px;">
+        <button class="tab-btn ${this.mode === 'adventure' ? 'active' : ''}" id="tabAdvMode">
+          🏝️ Đảo Toán Học Phiêu Lưu (Theo Bản Đồ)
+        </button>
+        <button class="tab-btn ${this.mode === 'curriculum' ? 'active' : ''}" id="tabCurrMode">
+          📚 Khu Vườn SGK (11 Trò Chơi)
+        </button>
+      </div>
+
       <!-- Mascot Banner -->
       <section class="mascot-banner">
         <div class="robot-avatar">
           <svg width="68" height="68" viewBox="0 0 100 100">
-            <!-- Antenna -->
             <line x1="50" y1="20" x2="50" y2="8" stroke="#0284c7" stroke-width="5" stroke-linecap="round" class="antenna-wiggle"/>
             <circle cx="50" cy="8" r="6" fill="#f59e0b" class="antenna-wiggle"/>
-            <!-- Head -->
             <rect x="18" y="20" width="64" height="52" rx="16" fill="#ffffff" stroke="#0284c7" stroke-width="4"/>
-            <!-- Eyes -->
             <circle cx="36" cy="44" r="8" fill="#0284c7"/>
             <circle cx="64" cy="44" r="8" fill="#0284c7"/>
             <circle cx="38" cy="42" r="3" fill="#ffffff"/>
             <circle cx="66" cy="42" r="3" fill="#ffffff"/>
-            <!-- Cheeks -->
             <circle cx="28" cy="54" r="5" fill="#fca5a5" opacity="0.6"/>
             <circle cx="72" cy="54" r="5" fill="#fca5a5" opacity="0.6"/>
-            <!-- Smile -->
             <path d="M 40 56 Q 50 66 60 56" fill="none" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
           </svg>
         </div>
@@ -169,12 +248,26 @@ class App {
       </div>
     `;
 
-    // Bind tab clicks
-    this.mainContent.querySelectorAll('.tab-btn').forEach(btn => {
+    // Mode switch buttons
+    document.getElementById('tabAdvMode')?.addEventListener('click', () => {
+      sound.playClick();
+      this.mode = 'adventure';
+      localStorage.setItem('adv_app_mode', 'adventure');
+      this.renderMain();
+    });
+    document.getElementById('tabCurrMode')?.addEventListener('click', () => {
+      sound.playClick();
+      this.mode = 'curriculum';
+      localStorage.setItem('adv_app_mode', 'curriculum');
+      this.renderMain();
+    });
+
+    // Bind semester tab clicks
+    this.mainContent.querySelectorAll('[data-sem]').forEach(btn => {
       btn.addEventListener('click', () => {
         sound.playClick();
         this.currentSemester = btn.dataset.sem;
-        this.renderHome();
+        this.renderCurriculumHome();
       });
     });
 
@@ -200,9 +293,26 @@ class App {
       this.addStar();
     };
 
+    const parentSettings = JSON.parse(localStorage.getItem('adv_parent_settings') || '{"scope":"10","autoVoice":true}');
+    const currentScope = parentSettings.scope || '10';
     const semesterNum = this.currentSemester === '2' ? 2 : 1;
 
     switch (gameId) {
+      // Adventure Island Mini-Games
+      case 'adv_count':
+        this.currentGame = new GameAdvCount(screen, onComplete, onStarEarned, currentScope);
+        break;
+      case 'adv_fruit':
+        this.currentGame = new GameAdvFruit(screen, onComplete, onStarEarned, currentScope);
+        break;
+      case 'adv_balloons':
+        this.currentGame = new GameAdvBalloons(screen, onComplete, onStarEarned, currentScope);
+        break;
+      case 'adv_compare':
+        this.currentGame = new GameAdvCompare(screen, onComplete, onStarEarned, currentScope);
+        break;
+
+      // Curriculum Mini-Games
       case 'count':
         this.currentGame = new GameCount(screen, onComplete, onStarEarned, semesterNum);
         break;
@@ -237,16 +347,16 @@ class App {
         this.currentGame = new GameFishing(screen, onComplete, onStarEarned, semesterNum);
         break;
       default:
-        this.renderHome();
+        this.renderMain();
         return;
     }
 
     // Delegated back button listener on screen container
     screen.addEventListener('click', (e) => {
-      const exitBtn = e.target.closest('#gameExitBtn, .btn-back');
+      const exitBtn = e.target.closest('#gameExitBtn, #advExitBtn, .btn-back');
       if (exitBtn) {
         sound.playClick();
-        this.renderHome();
+        this.renderMain();
       }
     });
 
@@ -258,7 +368,32 @@ class App {
     confetti.fire(3000, 100);
 
     const isPerfect = correctCount === totalCount;
-    const starsEarned = correctCount;
+
+    // Record stats
+    const stats = JSON.parse(localStorage.getItem('adv_learning_stats') || '{"totalQ":0,"correctFirst":0,"hintUsed":0}');
+    stats.totalQ += totalCount;
+    stats.correctFirst += correctCount;
+    localStorage.setItem('adv_learning_stats', JSON.stringify(stats));
+
+    // If it's an adventure station, unlock next station!
+    const isAdv = gameId.startsWith('adv_');
+    if (isAdv) {
+      const stationStars = JSON.parse(localStorage.getItem('adv_station_stars') || '{}');
+      const earnedStars = Math.max(1, Math.round((correctCount / totalCount) * 3));
+      stationStars[gameId] = Math.max(stationStars[gameId] || 0, earnedStars);
+      localStorage.setItem('adv_station_stars', JSON.stringify(stationStars));
+
+      const unlocked = JSON.parse(localStorage.getItem('adv_unlocked_stations') || '["adv_count"]');
+      const idx = ISLAND_STATIONS.findIndex(s => s.id === gameId);
+      if (idx !== -1 && idx + 1 < ISLAND_STATIONS.length) {
+        const nextStation = ISLAND_STATIONS[idx + 1];
+        if (!unlocked.includes(nextStation.id)) {
+          unlocked.push(nextStation.id);
+          localStorage.setItem('adv_unlocked_stations', JSON.stringify(unlocked));
+          localStorage.setItem('adv_current_station', nextStation.id);
+        }
+      }
+    }
 
     this.modalBody.innerHTML = `
       <div style="font-size: 64px; margin-bottom: 12px; animation: bounceSlow 1.5s infinite;">🎉</div>
@@ -276,7 +411,9 @@ class App {
       </div>
 
       <div style="display: flex; gap: 12px; justify-content: center;">
-        <button class="btn-back" id="modalHomeBtn" style="font-size: 16px; padding: 10px 20px;">🏠 Về Trang Chủ</button>
+        <button class="btn-back" id="modalHomeBtn" style="font-size: 16px; padding: 10px 20px;">
+          ${isAdv ? '🏝️ Về Bản Đồ' : '🏠 Về Trang Chủ'}
+        </button>
         <button class="play-action-btn" id="modalReplayBtn" style="font-size: 16px; padding: 10px 24px;">🔄 Chơi Lại</button>
       </div>
     `;
@@ -286,7 +423,7 @@ class App {
     document.getElementById('modalHomeBtn')?.addEventListener('click', () => {
       sound.playClick();
       this.modalOverlay.classList.remove('active');
-      this.renderHome();
+      this.renderMain();
     });
 
     document.getElementById('modalReplayBtn')?.addEventListener('click', () => {
@@ -326,7 +463,6 @@ class App {
   }
 
   bindGlobalEvents() {
-    // Sound toggle
     if (this.soundToggleBtn) {
       this.soundToggleBtn.addEventListener('click', () => {
         const enabled = sound.toggleSound();
@@ -336,20 +472,17 @@ class App {
       });
     }
 
-    // Badge list modal
     if (this.badgeBtn) {
       this.badgeBtn.addEventListener('click', () => {
         this.showBadgesModal();
       });
     }
 
-    // Brand logo returns to home
     document.getElementById('brandLogo')?.addEventListener('click', () => {
       sound.playClick();
-      this.renderHome();
+      this.renderMain();
     });
 
-    // Close modal
     if (this.modalCloseBtn) {
       this.modalCloseBtn.addEventListener('click', () => {
         sound.playClick();
@@ -367,7 +500,6 @@ class App {
   }
 }
 
-// Instantiate on DOM load
 window.addEventListener('DOMContentLoaded', () => {
   const app = new App();
   app.init();

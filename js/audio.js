@@ -335,18 +335,75 @@ class SoundSystem {
     osc.stop(now + 0.35);
   }
 
-  // Optional Text-To-Speech encouraging words in Vietnamese
+  // Melodic tick for tapping & counting items (pitch rises with count)
+  playNumberTick(index = 1) {
+    if (!this.soundEnabled) return;
+    this.init();
+    if (!this.audioCtx) return;
+
+    const ctx = this.audioCtx;
+    const now = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    // Pentatonic scale base frequencies
+    const baseFreq = 440; // A4
+    const semitones = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21];
+    const shift = semitones[(index - 1) % semitones.length];
+    const freq = baseFreq * Math.pow(2, shift / 12);
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, now);
+
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.18);
+  }
+
+  // Non-punishing gentle encouraging tone for retry
+  playGentleRetry() {
+    if (!this.soundEnabled) return;
+    this.init();
+    if (!this.audioCtx) return;
+
+    const ctx = this.audioCtx;
+    const now = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(392.00, now); // G4
+    osc.frequency.exponentialRampToValueAtTime(329.63, now + 0.22); // E4 gentle cadence
+
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.28);
+  }
+
+  // Kid-friendly Vietnamese Text-To-Speech
   speakVietnamese(text) {
     if (!this.speechEnabled || !window.speechSynthesis) return;
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'vi-VN';
-      utterance.rate = 0.95;
-      utterance.pitch = 1.2; // Kid-friendly high pitch
+      utterance.rate = 0.9;
+      utterance.pitch = 1.15; // Friendly warm pitch
       window.speechSynthesis.speak(utterance);
     } catch (e) {
-      console.log('Speech synthesis note:', e);
+      console.log('Speech note:', e);
     }
   }
 }

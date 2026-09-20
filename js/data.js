@@ -211,3 +211,116 @@ export const ROBOT_ENCOURAGE = [
   'Bé quan sát kĩ hơn một chút nào!',
   'Cố lên nào, bạn Robot tin bé sẽ làm được!'
 ];
+
+// ============================================================================
+// BÉ HỌC TOÁN PHIÊU LƯU (ADVENTURE ISLAND) DATA
+// ============================================================================
+
+export const ISLAND_STATIONS = [
+  {
+    id: 'adv_count',
+    number: 1,
+    title: 'Đếm & Chọn Số',
+    subtitle: 'Khu Rừng Đom Đóm',
+    gameType: 'adv_count',
+    icon: '🍎',
+    bgTheme: '#ecfdf5',
+    color: '#10b981',
+    desc: 'Đếm các đồ vật đáng yêu và bấm chọn số đúng. Chạm vào đồ vật để đếm!',
+    x: 18,
+    y: 75
+  },
+  {
+    id: 'adv_fruit',
+    number: 2,
+    title: 'Hái Quả Cộng Trừ',
+    subtitle: 'Nông Trại Trái Cây',
+    gameType: 'adv_fruit',
+    icon: '🧺',
+    bgTheme: '#fffbeb',
+    color: '#f59e0b',
+    desc: 'Quả rơi vào giỏ sinh động giúp bé nhìn thấy phép tính cộng trừ cực dễ!',
+    x: 42,
+    y: 52
+  },
+  {
+    id: 'adv_balloons',
+    number: 3,
+    title: 'Bắt Bóng Bay',
+    subtitle: 'Thung Lũng Cầu Vồng',
+    gameType: 'adv_balloons',
+    icon: '🎈',
+    bgTheme: '#f0fdf4',
+    color: '#06b6d4',
+    desc: 'Bóng bay mang số bay lên, bé tính nhanh và bấm quả bóng nổ bốc khói sao!',
+    x: 68,
+    y: 35
+  },
+  {
+    id: 'adv_compare',
+    number: 4,
+    title: 'Cá Lớn Nuốt Cá Bé',
+    subtitle: 'Vịnh Biển San Hô',
+    gameType: 'adv_compare',
+    icon: '🐟',
+    bgTheme: '#eff6ff',
+    color: '#3b82f6',
+    desc: 'Chú cá há to miệng về bên nhiều hơn! So sánh số và chọn dấu đúng.',
+    x: 84,
+    y: 68
+  },
+  {
+    id: 'adv_order',
+    number: 5,
+    title: 'Đoàn Tàu Thứ Tự',
+    subtitle: 'Đường Ray Kỳ Thú',
+    gameType: 'adv_order',
+    icon: '🚂',
+    bgTheme: '#fdf2f8',
+    color: '#ec4899',
+    desc: 'Xếp các toa tàu số theo thứ tự tăng giảm dần.',
+    isLocked: true,
+    isComingSoon: true,
+    x: 55,
+    y: 85
+  },
+  {
+    id: 'adv_shapes',
+    number: 6,
+    title: 'Thành Phố Hình Khối',
+    subtitle: 'Lâu Đài Phép Màu',
+    gameType: 'adv_shapes',
+    icon: '🔷',
+    bgTheme: '#faf5ff',
+    color: '#8b5cf6',
+    desc: 'Nhận biết hình tròn, vuông, tam giác và hình khối.',
+    isLocked: true,
+    isComingSoon: true,
+    x: 75,
+    y: 88
+  }
+];
+
+export const WARDROBE_ITEMS = [
+  { id: 'hat_straw', name: 'Mũ Thám Hiểm', type: 'hat', icon: '👒', cost: 5, desc: 'Mũ rơm thám hiểm đảo hoang' },
+  { id: 'hat_crown', name: 'Vương Miện Vàng', type: 'hat', icon: '👑', cost: 15, desc: 'Vương miện công chúa/hoàng tử' },
+  { id: 'glasses_cool', name: 'Kính Mát Ngầu', type: 'glasses', icon: '🕶️', cost: 10, desc: 'Kính râm chống nắng biển' },
+  { id: 'ribbon_red', name: 'Nơ Đỏ Xinh', type: 'accessory', icon: '🎀', cost: 8, desc: 'Chiếc nơ cài siêu dễ thương' },
+  { id: 'jetpack', name: 'Balo Phản Lực', type: 'back', icon: '🚀', cost: 25, desc: 'Bay vù vù giữa các hòn đảo' }
+];
+
+export const MIU_CHEERS = [
+  'Miu Miu thấy bé giỏi quá!',
+  'Chính xác rồi! Bé thông minh tuyệt vời!',
+  'Hoan hô bé yêu! Bé làm nhanh quá!',
+  'Thêm một ngôi sao lấp lánh cho bé nè!',
+  'Bé của Miu Miu đỉnh thật đấy!'
+];
+
+export const MIU_ENCOURAGE = [
+  'Không sao đâu, bé thử lại một lần nữa nhé!',
+  'Bé đếm lại từ từ cùng Miu Miu nào!',
+  'Gần đúng rồi đấy, cố lên bé ơi!',
+  'Miu Miu tin bé nhất định sẽ tìm ra đáp số!'
+];
+
