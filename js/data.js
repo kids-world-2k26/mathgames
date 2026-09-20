@@ -184,6 +184,17 @@ export const GAMES_INFO = [
     icon: '🎣',
     bgColor: '#ccfbf1',
     desc: 'Đàn cá đại dương bơi lội mang các số phép tính. Thả cần câu chú cá chuẩn xác để kéo lên thuyền!'
+  },
+  {
+    id: 'frog',
+    title: 'Ếch Nhảy Tia Số',
+    subtitle: 'Cộng trừ & Bước nhảy trên tia số ao sen',
+    semester: 1,
+    tag: 'Tia Số 🐸',
+    tagClass: 'tag-tap1',
+    icon: '🐸',
+    bgColor: '#dcfce7',
+    desc: 'Quan sát chú ếch nhảy tiến, nhảy lùi trên đài sen để hiểu sâu bản chất phép cộng trừ.'
   }
 ];
 
@@ -193,6 +204,7 @@ export const BADGES = [
   { id: 'master_shapes', title: 'Kiến Trúc Sư Nhí', icon: '📐', reqStars: 25, desc: 'Chinh phục các thử thách hình khối' },
   { id: 'brick_master', title: 'Vua Phá Gạch', icon: '🧱', reqStars: 35, desc: 'Bậc thầy công phá tường gạch số học' },
   { id: 'speed_racer', title: 'Tay Đua Siêu Cấp', icon: '🏎️', reqStars: 45, desc: 'Kích hoạt nitro làm chủ đường đua' },
+  { id: 'frog_master', title: 'Vua Tia Số', icon: '🐸', reqStars: 55, desc: 'Bậc thầy nhảy trên tia số ao sen cùng chú ếch!' },
   { id: 'time_traveler', title: 'Chuyên Gia Thời Gian', icon: '🧭', reqStars: 60, desc: 'Nắm vững giờ giấc và thứ trong tuần' },
   { id: 'math_champion', title: 'Quán Quân Toán 1', icon: '🏆', reqStars: 75, desc: 'Hoàn thành xuất sắc 75 sao toán học!' }
 ];
@@ -270,17 +282,15 @@ export const ISLAND_STATIONS = [
     y: 68
   },
   {
-    id: 'adv_order',
+    id: 'adv_frog',
     number: 5,
-    title: 'Đoàn Tàu Thứ Tự',
-    subtitle: 'Đường Ray Kỳ Thú',
-    gameType: 'adv_order',
-    icon: '🚂',
-    bgTheme: '#fdf2f8',
-    color: '#ec4899',
-    desc: 'Xếp các toa tàu số theo thứ tự tăng giảm dần.',
-    isLocked: true,
-    isComingSoon: true,
+    title: 'Ếch Nhảy Tia Số',
+    subtitle: 'Ao Sen Diệu Kỳ',
+    gameType: 'adv_frog',
+    icon: '🐸',
+    bgTheme: '#ecfdf5',
+    color: '#059669',
+    desc: 'Cùng chú ếch xanh nhảy trên hàng đài sen tia số để tìm đáp án chính xác!',
     x: 55,
     y: 85
   },

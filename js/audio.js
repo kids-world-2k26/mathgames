@@ -392,6 +392,97 @@ class SoundSystem {
     osc.stop(now + 0.28);
   }
 
+  // Frog Jump spring / boing sound
+  playBoing() {
+    if (!this.soundEnabled) return;
+    this.init();
+    if (!this.audioCtx) return;
+
+    const ctx = this.audioCtx;
+    const now = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    // Frequency sweeps up then down quickly to simulate rubbery spring
+    osc.frequency.setValueAtTime(220, now);
+    osc.frequency.exponentialRampToValueAtTime(540, now + 0.12);
+    osc.frequency.exponentialRampToValueAtTime(320, now + 0.28);
+
+    gain.gain.setValueAtTime(0.35, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.3);
+  }
+
+  // Soft water pond landing splash
+  playPondSplash() {
+    if (!this.soundEnabled) return;
+    this.init();
+    if (!this.audioCtx) return;
+
+    const ctx = this.audioCtx;
+    const now = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(450, now);
+    osc.frequency.exponentialRampToValueAtTime(160, now + 0.15);
+
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.18);
+  }
+
+  // Convert number 0-100 to standard phonetic Vietnamese text
+  numberToVietnameseWords(n) {
+    n = parseInt(n, 10);
+    if (isNaN(n)) return '';
+    if (n === 0) return 'không';
+    if (n === 10) return 'mười';
+    if (n === 100) return 'một trăm';
+
+    const ones = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+
+    if (n < 10) return ones[n];
+
+    if (n < 20) {
+      const u = n % 10;
+      if (u === 0) return 'mười';
+      if (u === 4) return 'mười bốn';
+      if (u === 5) return 'mười lăm';
+      return `mười ${ones[u]}`;
+    }
+
+    const tens = Math.floor(n / 10);
+    const unit = n % 10;
+    const tensName = `${ones[tens]} mươi`;
+
+    if (unit === 0) return tensName;
+    if (unit === 1) return `${tensName} mốt`;
+    if (unit === 4) return `${tensName} bốn`;
+    if (unit === 5) return `${tensName} lăm`;
+    return `${tensName} ${ones[unit]}`;
+  }
+
+  // Speak a number using accurate Vietnamese phonetic text
+  speakVietnameseNumber(n) {
+    const text = this.numberToVietnameseWords(n);
+    this.speakVietnamese(text);
+  }
+
   // Kid-friendly Vietnamese Text-To-Speech
   speakVietnamese(text) {
     if (!this.speechEnabled || !window.speechSynthesis) return;

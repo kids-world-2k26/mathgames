@@ -23,6 +23,7 @@ import { GameAdvCount } from './games/game_adv_count.js';
 import { GameAdvFruit } from './games/game_adv_fruit.js';
 import { GameAdvBalloons } from './games/game_adv_balloons.js';
 import { GameAdvCompare } from './games/game_adv_compare.js';
+import { GameFrog } from './games/game_frog.js';
 
 class App {
   constructor() {
@@ -311,6 +312,11 @@ class App {
       case 'adv_compare':
         this.currentGame = new GameAdvCompare(screen, onComplete, onStarEarned, currentScope);
         break;
+      case 'adv_frog': {
+        const frogLvl = currentScope === '100' ? 3 : currentScope === '20' ? 2 : 1;
+        this.currentGame = new GameFrog(screen, onComplete, onStarEarned, frogLvl);
+        break;
+      }
 
       // Curriculum Mini-Games
       case 'count':
@@ -346,6 +352,11 @@ class App {
       case 'fishing':
         this.currentGame = new GameFishing(screen, onComplete, onStarEarned, semesterNum);
         break;
+      case 'frog': {
+        const lvl = semesterNum === 2 ? 3 : 1;
+        this.currentGame = new GameFrog(screen, onComplete, onStarEarned, lvl);
+        break;
+      }
       default:
         this.renderMain();
         return;
